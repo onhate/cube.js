@@ -159,14 +159,6 @@ const coerceForSqlQuery = (query, context: RequestContext) => ({
   requestId: context.requestId
 });
 
-interface Request extends ExpressRequest {
-  context?: RequestContext,
-  // It's deprecated
-  authInfo?: any,
-  // New one, replace authInfo
-  securityContext?: any,
-}
-
 export interface ApiGatewayOptions {
   standalone: boolean;
   dataSourceStorage: any;
@@ -224,7 +216,9 @@ export class ApiGateway {
     this.enforceSecurityChecks = options.enforceSecurityChecks || (process.env.NODE_ENV === 'production');
     this.extendContext = options.extendContext;
     this.checkAuthFn = options.checkAuth ? this.wrapCheckAuth(options.checkAuth) : this.defaultCheckAuth.bind(this);
-    this.checkAuthMiddleware = options.checkAuthMiddleware || this.checkAuth.bind(this);
+    this.checkAuthMiddleware = options.checkAuthMiddleware
+      ? this.wrapCheckAuthMiddleware(options.checkAuthMiddleware)
+      : this.checkAuth.bind(this);
     this.requestLoggerMiddleware = options.requestLoggerMiddleware || this.requestLogger.bind(this);
   }
 
@@ -700,6 +694,23 @@ export class ApiGateway {
       }, context);
       res({ error: e.toString() }, { status: 500 });
     }
+  }
+
+  protected wrapCheckAuthMiddleware(fn: CheckAuthMiddlewareFn): CheckAuthMiddlewareFn {
+    this.logger('check_auth_middleware_deprecation', {
+      warning: 'Option checkAuthMiddleware was deprecated in flavour of checkAuth, please migrate.'
+    });
+
+    return (req, res, next) => {
+      fn(req, res, (e) => {
+        // We renamed authInfo to securityContext, but users can continue to use it
+        if (req.authInfo) {
+          req.securityContext = req.authInfo;
+        }
+
+        next(e);
+      });
+    };
   }
 
   protected wrapCheckAuth(fn: (req: Request, auth?: string) => void) {

@@ -65,10 +65,18 @@ export interface RequestContext {
   requestId: string;
 }
 
+interface Request extends ExpressRequest {
+  context?: RequestContext,
+  // It's deprecated
+  authInfo?: any,
+  // New one, replace authInfo
+  securityContext?: any,
+}
+
 export type QueryTransformerFn = (query: Query, context: RequestContext) => Promise<Query>;
 
 // @deprecated
-export type CheckAuthMiddlewareFn = (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) => void
+export type CheckAuthMiddlewareFn = (req: Request, res: ExpressResponse, next: ExpressNextFunction) => void
 
 // @deprecated
 export type RequestLoggerMiddlewareFn = (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) => void
