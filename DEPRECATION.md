@@ -203,13 +203,17 @@ const server = new CubejsServer({
 
 You should use:
 
+>> Attention: `authInfo` renamed across all configuration. Check all functions for `authInfo` and rename it to `securityContext`.
+
 ```js
 const server = new CubejsServer({
   checkAuth: async (req, auth) => {
     // this one!
     req.securityContext = jwt.verify(auth, pem);
   },
+  // this one
   contextToAppId: ({ securityContext }) => `APP_${securityContext.userId}`,
+  // this one
   preAggregationsSchema: ({ securityContext }) => `pre_aggregations_${securityContext.userId}`,
 });
 ```

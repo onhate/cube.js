@@ -628,6 +628,8 @@ export class ApiGateway {
 
     return {
       securityContext,
+      // Deprecated, but let's allow it for now.
+      authInfo: securityContext,
       requestId,
       ...extensions
     };
