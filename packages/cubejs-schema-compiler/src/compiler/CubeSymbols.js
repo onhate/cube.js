@@ -5,7 +5,8 @@ import { DynamicReference } from './DynamicReference';
 
 const FunctionRegex = /function\s+\w+\(([A-Za-z0-9_,]*)|\(([\s\S]*?)\)\s*=>|\(?(\w+)\)?\s*=>/;
 const CONTEXT_SYMBOLS = {
-  USER_CONTEXT: 'userContext',
+  USER_CONTEXT: 'securityContext',
+  SECURITY_CONTEXT: 'securityContext',
   FILTER_PARAMS: 'filterParams',
   SQL_UTILS: 'sqlUtils'
 };
@@ -133,19 +134,24 @@ export class CubeSymbols {
   }
 
   resolveSymbol(cubeName, name) {
-    // eslint-disable-next-line no-unused-vars
-    const { sqlResolveFn, contextSymbols, query } = this.resolveSymbolsCallContext || {};
+    const { sqlResolveFn, contextSymbols } = this.resolveSymbolsCallContext || {};
     if (CONTEXT_SYMBOLS[name]) {
+      if (name === 'USER_CONTEXT') {
+
+      }
+
       // always resolves if contextSymbols aren't passed for transpile step
       const symbol = contextSymbols && contextSymbols[CONTEXT_SYMBOLS[name]] || {};
       // eslint-disable-next-line no-underscore-dangle
       symbol._objectWithResolvedProperties = true;
       return symbol;
     }
+
     let cube = this.isCurrentCube(name) && this.symbols[cubeName] || this.symbols[name];
     if (sqlResolveFn && cube) {
       cube = this.cubeReferenceProxy(this.isCurrentCube(name) ? cubeName : name);
     }
+
     return cube || (this.symbols[cubeName] && this.symbols[cubeName][name]);
   }
 

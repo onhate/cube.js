@@ -26,11 +26,11 @@ Cube.js uses [JSON Web Tokens (JWT)][link-jwt] which should be passed in the
 `Authorization: <JWT>` header to authenticate requests.
 
 JWTs can also be used to pass additional information about the user, known as a [security context][link-security-context]. It must be stored inside the **u** namespace. It will be accessible in the
-[USER_CONTEXT][link-user-context] object in the Data Schema and in [authInfo][link-authinfo] variable which is used to support [Multitenancy][link-multitenancy].
+[SECURITY_CONTEXT][link-security-context] object in the Data Schema and in [securityContext][link-securitycontext] variable which is used to support [Multitenancy][link-multitenancy].
 
 In the example
 below **user_id**, located inside the **u** namespace, will be passed inside the
-security context and will be accessible in the [USER_CONTEXT][link-user-context] object.
+security context and will be accessible in the [USER_CONTEXT][link-security-context] object.
 
 ```json
 {
@@ -43,8 +43,8 @@ security context and will be accessible in the [USER_CONTEXT][link-user-context]
 ```
 
 [link-jwt]: https://jwt.io/
-[link-user-context]: /cube#context-variables-user-context
-[link-authinfo]: /config#authinfo
+[link-security-context]: /cube#context-variables-security-context
+[link-securitycontext]: /config#securitycontext
 [link-multitenancy]: /multitenancy-setup
 
 
@@ -251,7 +251,7 @@ module.exports = {
     const decoded = jwt.decode(auth, { complete: true });
     const jwk = _.find(jwks.keys, (x) => x.kid === decoded.header.kid);
     const pem = jwkToPem(jwk);
-    req.authInfo = jwt.verify(auth, pem);
+    req.securityContext = jwt.verify(auth, pem);
   },
 };
 ```

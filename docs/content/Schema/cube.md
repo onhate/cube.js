@@ -499,13 +499,13 @@ cube(`visitors`, {
 ### Compile context
 
 There's global `COMPILE_CONTEXT` that captured as [RequestContext](@cubejs-backend-server-core#request-context) at the time of schema compilation.
-It contains `authInfo` and any other variables provided by [extendContext](@cubejs-backend-server-core#options-reference-extend-context).
+It contains `securityContext` and any other variables provided by [extendContext](@cubejs-backend-server-core#options-reference-extend-context).
 
 [[warning | Note]]
-| While `authInfo` defined in `COMPILE_CONTEXT` it doesn't change it's value for different users. It may change however for different tenants.
+| While `securityContext` defined in `COMPILE_CONTEXT` it doesn't change it's value for different users. It may change however for different tenants.
 
 ```javascript
-const { authInfo: { deploymentId } } = COMPILE_CONTEXT;
+const { securityContext: { deploymentId } } = COMPILE_CONTEXT;
 
 const schemaName = `user_${deploymentId}`;
 

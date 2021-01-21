@@ -33,16 +33,18 @@ features:
   migrate to alternatives. In such cases, a warning may be printed, and users
   should not rely on this feature.
 
-| Status     | Feature                                                              | Deprecated | Remove       |
-| ---------- | -------------------------------------------------------------------- | ---------- | ------------ |
-| Removed    | [`contextToDataSourceId`](#contexttodatasourceid)                    | v0.25.0    | v0.25.0      |
-| Deprecated | [Embedding Cube.js within Express](#embedding-cubejs-within-express) | v0.24.0    | June 2021    |
-| Deprecated | [`CUBEJS_ENABLE_TLS`](#cubejs_enable_tls)                            | v0.23.11   | January 2021 |
-| Deprecated | [`hearBeatInterval`](#hearbeatinterval)                              | v0.23.8    | June 2021    |
-| Deprecated | [Node.js 8](#nodejs-8)                                               | v0.22.4    | v0.26.0      |
-| Deprecated | Absolute import for @cubejs-backend/query-orchestrator               | v0.24.2    | v0.28.0      |
-| Deprecated | Absolute import for @cubejs-backend/server-core                      | v0.25.4    | v0.30.0      |
-| Deprecated | Absolute import for @cubejs-backend/schema-compiler                  | v0.25.21   | v0.32.0      |
+| Status     | Feature                                                                                           | Deprecated | Remove       |
+| ---------- | --------------------------------------------------------------------------------------------------| ---------- | ------------ |
+| Removed    | [`contextToDataSourceId`](#contexttodatasourceid)                                                 | v0.25.0    | v0.25.0      |
+| Deprecated | [Embedding Cube.js within Express](#embedding-cubejs-within-express)                              | v0.24.0    | June 2021    |
+| Deprecated | [`CUBEJS_ENABLE_TLS`](#cubejs_enable_tls)                                                         | v0.23.11   | January 2021 |
+| Deprecated | [`hearBeatInterval`](#hearbeatinterval)                                                           | v0.23.8    | June 2021    |
+| Deprecated | [Node.js 8](#nodejs-8)                                                                            | v0.22.4    | v0.26.0      |
+| Deprecated | Absolute import for @cubejs-backend/query-orchestrator                                            | v0.24.2    | v0.28.0      |
+| Deprecated | Absolute import for @cubejs-backend/server-core                                                   | v0.25.4    | v0.30.0      |
+| Deprecated | Absolute import for @cubejs-backend/schema-compiler                                               | v0.25.21   | v0.32.0      |
+| Deprecated | [USER_CONTEXT renamed to SECURITY_CONTEXT](#user_context-renamed-to-security_context)             | v0.25.23   | v0.33.0      |
+| Deprecated | [authInfo renamed to securityContext](#authinfo-renamed-to-securitycontext)                       | v0.25.23   | v0.33.0      |
 
 ### `contextToDataSourceId`
 
@@ -156,4 +158,58 @@ You should use:
 
 ```js
 const { BaseQuery } = require('@cubejs-backend/schema-compiler');
+```
+
+### USER_CONTEXT renamed to SECURITY_CONTEXT
+
+**Deprecated in Release: v0.25.23**
+
+We are interested to be consistence with our documentation where we are using term as "Security Context".
+
+Deprecated:
+
+```js
+cube(`visitors`, {
+  sql: `select * from visitors WHERE ${USER_CONTEXT.source.filter('source')}`
+});
+```
+
+You should use:
+
+```js
+cube(`visitors`, {
+  sql: `select * from visitors WHERE ${SECURITY_CONTEXT.source.filter('source')}`
+});
+```
+
+### authInfo renamed to securityContext
+
+**Deprecated in Release: v0.25.23**
+
+We are interested to be consistence with our documentation where we are using term as "Security Context".
+
+Deprecated:
+
+```js
+const server = new CubejsServer({
+  checkAuth: async (req, auth) => {
+    // this one!
+    req.authInfo = jwt.verify(auth, pem);
+  },
+  contextToAppId: ({ authInfo }) => `APP_${authInfo.userId}`,
+  preAggregationsSchema: ({ authInfo }) => `pre_aggregations_${authInfo.userId}`,
+});
+```
+
+You should use:
+
+```js
+const server = new CubejsServer({
+  checkAuth: async (req, auth) => {
+    // this one!
+    req.securityContext = jwt.verify(auth, pem);
+  },
+  contextToAppId: ({ securityContext }) => `APP_${securityContext.userId}`,
+  preAggregationsSchema: ({ securityContext }) => `pre_aggregations_${securityContext.userId}`,
+});
 ```
