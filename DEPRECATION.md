@@ -45,6 +45,7 @@ features:
 | Deprecated | Absolute import for @cubejs-backend/schema-compiler                                               | v0.25.21   | v0.32.0      |
 | Deprecated | [USER_CONTEXT renamed to SECURITY_CONTEXT](#user_context-renamed-to-security_context)             | v0.25.23   | v0.33.0      |
 | Deprecated | [authInfo renamed to securityContext](#authinfo-renamed-to-securitycontext)                       | v0.25.23   | v0.33.0      |
+| Deprecated | [`checkAuthMiddleware`](#checkauthmiddleware)                                                     | v0.25.23   | v0.33.0      |
 
 ### `contextToDataSourceId`
 
@@ -217,3 +218,19 @@ const server = new CubejsServer({
   preAggregationsSchema: ({ securityContext }) => `pre_aggregations_${securityContext.userId}`,
 });
 ```
+
+### `checkAuthMiddleware`
+
+**Deprecated in Release: v0.25.23**
+
+Previous versions of Cube.js allowed setting a `checkAuthMiddleware` parameter, which was deprecated silently a long time ago.
+Now It shows a deprecation message which as expected to indicate users.
+
+Cube.js also allows you to provide your own JWT verification logic by
+setting a [`checkAuth()`][link-check-auth-ref] function in the `cube.js`
+configuration file. This function is expected to verify a JWT and
+assigns its' claims to the security context.
+
+If you are using custom authorization, please take a (look at the documentation)[link-custom-auth]
+
+[link-custom-auth]: https://cube.dev/docs/security#custom-authentication
