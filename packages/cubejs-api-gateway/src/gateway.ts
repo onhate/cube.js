@@ -25,6 +25,7 @@ import {
   QueryTransformerFn,
   RequestContext,
   RequestLoggerMiddlewareFn,
+  Request,
 } from './interfaces';
 import { cachedHandler } from './cached-handler';
 

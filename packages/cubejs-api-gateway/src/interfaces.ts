@@ -65,7 +65,7 @@ export interface RequestContext {
   requestId: string;
 }
 
-interface Request extends ExpressRequest {
+export interface Request extends ExpressRequest {
   context?: RequestContext,
   // It's deprecated
   authInfo?: any,
